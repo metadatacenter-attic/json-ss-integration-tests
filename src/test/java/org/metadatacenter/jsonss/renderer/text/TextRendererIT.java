@@ -1,20 +1,14 @@
-package org.mm.renderer.text;
+package org.metadatacenter.jsonss.renderer.text;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mm.core.settings.ReferenceSettings;
-import org.mm.parser.ParseException;
-import org.mm.renderer.RendererException;
-import org.mm.rendering.text.TextRendering;
-import org.mm.ss.SpreadsheetLocation;
-import org.mm.test.IntegrationTestBase;
+import org.metadatacenter.jsonss.core.settings.ReferenceSettings;
+import org.metadatacenter.jsonss.parser.ParseException;
+import org.metadatacenter.jsonss.test.IntegrationTestBase;
+
+import java.io.IOException;
 
 public class TextRendererIT extends IntegrationTestBase
 {
