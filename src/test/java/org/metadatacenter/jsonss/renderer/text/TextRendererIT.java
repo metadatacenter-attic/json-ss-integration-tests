@@ -19,22 +19,87 @@ public class TextRendererIT extends IntegrationTestBase
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
 
-  @Before
-  public void setUp() 
+  @Before public void setUp()
   {
     settings = new ReferenceSettings();
   }
 
-  @Test public void TestTest()
-      throws ParseException, IOException
+  @Test public void TestLiteralStringReference() throws ParseException, IOException
   {
+    String inputExpression = "{ \"hasCar\": @\"BMW\" }";
+    String outputExpression = "{ \"hasCar\": \"BMW\" }";
+  }
+
+  @Test public void TestStringReference() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasCar\": @A1 }";
+    String outputExpression = "{ \"hasCar\": \"BMW\" }";
     Label cellA1 = createCell("BMW", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
-
-    String expression = "{ \"hasCar\": @A1 }";
-//    Optional<TextRendering> rendering = createTextRendering(ss, expression, settings);
-//    assertThat(rendering.isPresent(), is(true));
   }
+
+  @Test public void TestQualifiedStringReference() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasCar\": @A1(string) }";
+    String outputExpression = "{ \"hasCar\": \"BMW\" }";
+    Label cellA1 = createCell("BMW", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
+  @Test public void TestIntegerReference() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasAge\": @A1(integer) }";
+    String outputExpression = "{ \"hasAge\": 33 }";
+    Label cellA1 = createCell("33", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
+  @Test public void TestNumericReference() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasHeight\": @A1(numeric) }";
+    String outputExpression = "{ \"hasHeight\": 33.3 }";
+    Label cellA1 = createCell("33.3", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
+  @Test public void TestBooleanReference() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"isFrench\": @A1(boolean) }";
+    String outputExpression = "{ \"isFrench\": true }";
+    Label cellA1 = createCell("true", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
+  @Test public void TestStringReferenceRange() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasAliases\": @A1:A2 }";
+    String outputExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
+    Label cellA1 = createCell("Bob", 1, 1);
+    Label cellA2 = createCell("Bobby", 1, 1);
+    Set<Label> cells = createCells(cellA1, cellA2);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
+  @Test public void TestExplicitStringReferenceRange() throws ParseException, IOException
+  {
+    String inputExpression = "{ \"hasAliases\": @A1:A2(string) }";
+    String outputExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
+    Label cellA1 = createCell("Bob", 1, 1);
+    Label cellA2 = createCell("Bobby", 1, 1);
+    Set<Label> cells = createCells(cellA1, cellA2);
+    Map<String, Set<Label>> ss = new HashMap<>();
+    ss.put(SHEET1, cells);
+  }
+
 }
