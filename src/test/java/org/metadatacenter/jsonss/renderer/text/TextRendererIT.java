@@ -96,7 +96,7 @@ public class TextRendererIT extends IntegrationTestBase
     String inputExpression = "{ \"hasAliases\": @A1:A2(string) }";
     String outputExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
     Label cellA1 = createCell("Bob", 1, 1);
-    Label cellA2 = createCell("Bobby", 1, 1);
+    Label cellA2 = createCell("Bobby", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
@@ -107,7 +107,7 @@ public class TextRendererIT extends IntegrationTestBase
     String inputExpression = "{ \"hasHeights\": @A1:A2(integer) }";
     String outputExpression = "{ \"hasHeights\": [ 44, 55 ] }";
     Label cellA1 = createCell("44", 1, 1);
-    Label cellA2 = createCell("55", 1, 1);
+    Label cellA2 = createCell("55", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
@@ -118,7 +118,7 @@ public class TextRendererIT extends IntegrationTestBase
     String inputExpression = "{ \"hasHeights\": @A1:A2(number) }";
     String outputExpression = "{ \"hasHeights\": [ 44.1, 55.4 ] }";
     Label cellA1 = createCell("44.1", 1, 1);
-    Label cellA2 = createCell("55.4", 1, 1);
+    Label cellA2 = createCell("55.4", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
@@ -129,19 +129,23 @@ public class TextRendererIT extends IntegrationTestBase
     String inputExpression = "{ \"switchPositions\": @A1:A2(boolean) }";
     String outputExpression = "{ \"switchPositions\": [ true, false ] }";
     Label cellA1 = createCell("true", 1, 1);
-    Label cellA2 = createCell("false", 1, 1);
+    Label cellA2 = createCell("false", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
   }
 
-  @Test public void TestNetedReferenceColumnWildcard() throws ParseException, IOException
+  @Test public void TestObjectReferenceRange() throws ParseException, IOException
   {
-    String inputExpression = "{ \"switchPositions\": @A1:A2(boolean) }";
-    String outputExpression = "{ \"switchPositions\": [ true, false ] }";
-    Label cellA1 = createCell("true", 1, 1);
-    Label cellA2 = createCell("false", 1, 1);
-    Set<Label> cells = createCells(cellA1, cellA2);
+    String inputExpression = "{ \"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(integer) } }";
+    String outputExpression = "{ \"people\": [" +
+      "{ \"name\": \"Bob\", \"age\": 23 }, " +
+      "{ \"name\": \"Fred\", \"age\": 33 } ] }";
+    Label cellA1 = createCell("Bob", 1, 1);
+    Label cellA2 = createCell("Fred", 1, 2);
+    Label cellB1 = createCell("23", 2, 1);
+    Label cellB2 = createCell("33", 2, 2);
+    Set<Label> cells = createCells(cellA1, cellA2, cellB1, cellB2);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
   }
