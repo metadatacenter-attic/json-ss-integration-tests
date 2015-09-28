@@ -288,26 +288,36 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, textRendering.get().getRendering());
   }
 
-  @Test public void TestLiteralStringReference() throws ParseException, IOException
+  @Test public void TestLiteralStringReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasCar\": @\"BMW\" }";
-    String outputExpression = "{ \"hasCar\": \"BMW\" }";
+    String inputExpression = "{\"hasCar\": @\"BMW\"}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestStringReference() throws ParseException, IOException
+  @Test public void TestStringReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasCar\": @A1 }";
-    String outputExpression = "{ \"hasCar\": \"BMW\" }";
+    String inputExpression = "{\"hasCar\": @A1}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
     Label cellA1 = createCell("BMW", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
     ss.put(SHEET1, cells);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
   @Test public void TestQualifiedStringReference() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasCar\": @A1(string) }";
-    String outputExpression = "{ \"hasCar\": \"BMW\" }";
+    String expectedExpression = "{ \"hasCar\": \"BMW\" }";
     Label cellA1 = createCell("BMW", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
@@ -317,7 +327,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestIntegerReference() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasAge\": @A1(integer) }";
-    String outputExpression = "{ \"hasAge\": 33 }";
+    String expectedExpression = "{ \"hasAge\": 33 }";
     Label cellA1 = createCell("33", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
@@ -327,7 +337,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestNumberReference() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasHeight\": @A1(number) }";
-    String outputExpression = "{ \"hasHeight\": 33.3 }";
+    String expectedExpression = "{ \"hasHeight\": 33.3 }";
     Label cellA1 = createCell("33.3", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
@@ -337,7 +347,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestBooleanReference() throws ParseException, IOException
   {
     String inputExpression = "{ \"isFrench\": @A1(boolean) }";
-    String outputExpression = "{ \"isFrench\": true }";
+    String expectedExpression = "{ \"isFrench\": true }";
     Label cellA1 = createCell("true", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Map<String, Set<Label>> ss = new HashMap<>();
@@ -347,7 +357,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestStringReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasAliases\": @A1:A2 }";
-    String outputExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
+    String expectedExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Bobby", 1, 1);
     Set<Label> cells = createCells(cellA1, cellA2);
@@ -358,7 +368,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestExplicitStringReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasAliases\": @A1:A2(string) }";
-    String outputExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
+    String expectedExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Bobby", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
@@ -369,7 +379,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestIntegerReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasHeights\": @A1:A2(integer) }";
-    String outputExpression = "{ \"hasHeights\": [ 44, 55 ] }";
+    String expectedExpression = "{ \"hasHeights\": [ 44, 55 ] }";
     Label cellA1 = createCell("44", 1, 1);
     Label cellA2 = createCell("55", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
@@ -380,7 +390,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestNumberReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"hasHeights\": @A1:A2(number) }";
-    String outputExpression = "{ \"hasHeights\": [ 44.1, 55.4 ] }";
+    String expectedExpression = "{ \"hasHeights\": [ 44.1, 55.4 ] }";
     Label cellA1 = createCell("44.1", 1, 1);
     Label cellA2 = createCell("55.4", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
@@ -391,7 +401,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestBooleanReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"switchPositions\": @A1:A2(boolean) }";
-    String outputExpression = "{ \"switchPositions\": [ true, false ] }";
+    String expectedExpression = "{ \"switchPositions\": [ true, false ] }";
     Label cellA1 = createCell("true", 1, 1);
     Label cellA2 = createCell("false", 1, 2);
     Set<Label> cells = createCells(cellA1, cellA2);
@@ -402,7 +412,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestObjectReferenceRange() throws ParseException, IOException
   {
     String inputExpression = "{ \"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(integer) } }";
-    String outputExpression = "{ \"people\": [" +
+    String expectedExpression = "{ \"people\": [" +
         "{ \"name\": \"Bob\", \"age\": 23 }, " +
         "{ \"name\": \"Fred\", \"age\": 33 } ] }";
     Label cellA1 = createCell("Bob", 1, 1);
