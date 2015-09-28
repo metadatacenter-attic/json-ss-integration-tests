@@ -1,16 +1,20 @@
 package org.metadatacenter.jsonss.renderer.text;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.metadatacenter.jsonss.core.settings.ReferenceSettings;
+import org.metadatacenter.jsonss.exceptions.JSONSSException;
 import org.metadatacenter.jsonss.parser.ParseException;
+import org.metadatacenter.jsonss.rendering.text.TextRendering;
 import org.metadatacenter.jsonss.test.IntegrationTestBase;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
@@ -22,6 +26,266 @@ public class TextRendererIT extends IntegrationTestBase
   @Before public void setUp()
   {
     settings = new ReferenceSettings();
+  }
+
+  @Test public void TestEmptyObject() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyArray() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyStringValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": \"\"}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyStringValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": \"value\"}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestBooleanTrueValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": true}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestBooleanFalseValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": false}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNullValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": null}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestIntegerValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": 23}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestFloatValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": 23.43}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyStringElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[\"\"]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyStringElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[\"value\"]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestIntegerElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[23]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestFloatElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[23.34]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestBooleanTrueElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[true]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestBooleanFalseElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[false]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNullElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[null]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyObjectElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[{}]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyObjectElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[{\"key\": 23}]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyArrayElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[[]]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyArrayElementValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[[23]]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyObjectValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": {}}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyObjectValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": {\"key2\": 23}}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestEmptyArrayValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": []}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestNonEmptyArrayValue() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key\": [23]}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestMultipleObjectValues() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "{\"key1\": 23, \"key2\": 23.45, \"key3\": null, \"key4\": {}, \"key5\": \"\", \"key6\": true, \"key7\": false, \"key8\": []}";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestMultipleArrayValues() throws ParseException, IOException, JSONSSException
+  {
+    String expression = "[23, 23.45, null, {}, \"\", true, false, []]";
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expression, textRendering.get().getRendering());
   }
 
   @Test public void TestLiteralStringReference() throws ParseException, IOException
@@ -139,8 +403,8 @@ public class TextRendererIT extends IntegrationTestBase
   {
     String inputExpression = "{ \"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(integer) } }";
     String outputExpression = "{ \"people\": [" +
-      "{ \"name\": \"Bob\", \"age\": 23 }, " +
-      "{ \"name\": \"Fred\", \"age\": 33 } ] }";
+        "{ \"name\": \"Bob\", \"age\": 23 }, " +
+        "{ \"name\": \"Fred\", \"age\": 33 } ] }";
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Fred", 1, 2);
     Label cellB1 = createCell("23", 2, 1);
