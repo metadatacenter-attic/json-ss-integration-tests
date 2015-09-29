@@ -422,8 +422,34 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
-  
-  // TODO Tests for capturing, replace, replaceAll, replaceFirst, append, prepend functions
+
+  @Test public void TestAppendFunctionInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(append(\"W\"))}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("BM", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestPrependFunctionInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(prepend(\"B\"))}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("MW", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  // TODO Tests for capturing, replace, replaceAll, replaceFirst functions
 
   // TODO Tests for shifting
 
