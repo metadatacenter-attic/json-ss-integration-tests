@@ -305,8 +305,6 @@ public class TextRendererIT extends IntegrationTestBase
     String expectedExpression = "{\"hasCar\": \"BMW\"}";
     Label cellA1 = createCell("BMW", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
 
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
 
@@ -314,14 +312,17 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestQualifiedStringReference() throws ParseException, IOException
+  @Test public void TestQualifiedStringReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasCar\": @A1(string) }";
-    String expectedExpression = "{ \"hasCar\": \"BMW\" }";
+    String inputExpression = "{\"hasCar\": @A1(string)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
     Label cellA1 = createCell("BMW", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
   @Test public void TestIntegerReference() throws ParseException, IOException
