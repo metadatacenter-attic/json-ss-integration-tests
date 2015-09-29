@@ -12,8 +12,6 @@ import org.metadatacenter.jsonss.rendering.text.TextRendering;
 import org.metadatacenter.jsonss.test.IntegrationTestBase;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -325,34 +323,43 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestIntegerReference() throws ParseException, IOException
+  @Test public void TestQualifiedNumberReferenceWithInteger() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasAge\": @A1(integer) }";
-    String expectedExpression = "{ \"hasAge\": 33 }";
+    String inputExpression = "{\"hasAge\": @A1(number)}";
+    String expectedExpression = "{\"hasAge\": 33}";
     Label cellA1 = createCell("33", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestNumberReference() throws ParseException, IOException
+  @Test public void TestQualifiedNumberReferenceWithFloat() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasHeight\": @A1(number) }";
-    String expectedExpression = "{ \"hasHeight\": 33.3 }";
+    String inputExpression = "{\"hasAge\": @A1(number)}";
+    String expectedExpression = "{\"hasAge\": 33.3}";
     Label cellA1 = createCell("33.3", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestBooleanReference() throws ParseException, IOException
+  @Test public void TestQualifiedBooleanReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"isFrench\": @A1(boolean) }";
-    String expectedExpression = "{ \"isFrench\": true }";
+    String inputExpression = "{\"isFrench\": @A1(boolean)}";
+    String expectedExpression = "{\"isFrench\": true}";
     Label cellA1 = createCell("true", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
   @Test public void TestStringReferenceRange() throws ParseException, IOException
@@ -362,67 +369,77 @@ public class TextRendererIT extends IntegrationTestBase
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Bobby", 1, 1);
     Set<Label> cells = createCells(cellA1, cellA2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
   }
 
-  @Test public void TestExplicitStringReferenceRange() throws ParseException, IOException
+  @Test public void TestToUpperCaseFunctionInReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasAliases\": @A1:A2(string) }";
-    String expectedExpression = "{ \"hasAliases\": [ \"Bob\", \"Bobby\" ] }";
-    Label cellA1 = createCell("Bob", 1, 1);
-    Label cellA2 = createCell("Bobby", 1, 2);
-    Set<Label> cells = createCells(cellA1, cellA2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+    String inputExpression = "{\"hasCar\": @A1(toUpperCase)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("bmw", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestIntegerReferenceRange() throws ParseException, IOException
+  @Test public void TestToLowerCaseFunctionInReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasHeights\": @A1:A2(integer) }";
-    String expectedExpression = "{ \"hasHeights\": [ 44, 55 ] }";
-    Label cellA1 = createCell("44", 1, 1);
-    Label cellA2 = createCell("55", 1, 2);
-    Set<Label> cells = createCells(cellA1, cellA2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+    String inputExpression = "{\"hasCar\": @A1(toLowerCase)}";
+    String expectedExpression = "{\"hasCar\": \"bmw\"}";
+    Label cellA1 = createCell("BMW", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestNumberReferenceRange() throws ParseException, IOException
+  @Test public void TestTrimFunctionInReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"hasHeights\": @A1:A2(number) }";
-    String expectedExpression = "{ \"hasHeights\": [ 44.1, 55.4 ] }";
-    Label cellA1 = createCell("44.1", 1, 1);
-    Label cellA2 = createCell("55.4", 1, 2);
-    Set<Label> cells = createCells(cellA1, cellA2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+    String inputExpression = "{\"hasCar\": @A1(trim)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell(" BMW   ", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  @Test public void TestBooleanReferenceRange() throws ParseException, IOException
+  @Test public void TestReverseFunctionInReference() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{ \"switchPositions\": @A1:A2(boolean) }";
-    String expectedExpression = "{ \"switchPositions\": [ true, false ] }";
-    Label cellA1 = createCell("true", 1, 1);
-    Label cellA2 = createCell("false", 1, 2);
-    Set<Label> cells = createCells(cellA1, cellA2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
+    String inputExpression = "{\"hasCar\": @A1(reverse)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("WMB", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
+
+  // TODO Tests for capturing, replace, replaceAll, replaceFirst, append, prepend functions
+
+  // TODO Tests for shifting
+
+  // TODO Tests for empty location and literal handling
 
   @Test public void TestObjectReferenceRange() throws ParseException, IOException
   {
-    String inputExpression = "{ \"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(integer) } }";
-    String expectedExpression = "{ \"people\": [" +
-        "{ \"name\": \"Bob\", \"age\": 23 }, " +
-        "{ \"name\": \"Fred\", \"age\": 33 } ] }";
+    String inputExpression = "{\"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(number)}}";
+    String expectedExpression = "{\"people\": [" +
+        "{\"name\": \"Bob\", \"age\": 23 }," +
+        "{\"name\": \"Fred\", \"age\": 33 }]}";
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Fred", 1, 2);
     Label cellB1 = createCell("23", 2, 1);
     Label cellB2 = createCell("33", 2, 2);
     Set<Label> cells = createCells(cellA1, cellA2, cellB1, cellB2);
-    Map<String, Set<Label>> ss = new HashMap<>();
-    ss.put(SHEET1, cells);
   }
 
 }
