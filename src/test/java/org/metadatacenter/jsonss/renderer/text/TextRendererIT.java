@@ -422,7 +422,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
-
+  
   // TODO Tests for capturing, replace, replaceAll, replaceFirst, append, prepend functions
 
   // TODO Tests for shifting
