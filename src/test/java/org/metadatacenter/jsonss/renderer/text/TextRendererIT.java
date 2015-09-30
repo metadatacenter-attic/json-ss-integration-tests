@@ -8,6 +8,7 @@ import org.junit.rules.ExpectedException;
 import org.metadatacenter.jsonss.core.settings.ReferenceSettings;
 import org.metadatacenter.jsonss.exceptions.JSONSSException;
 import org.metadatacenter.jsonss.parser.ParseException;
+import org.metadatacenter.jsonss.renderer.RendererException;
 import org.metadatacenter.jsonss.rendering.text.TextRendering;
 import org.metadatacenter.jsonss.test.IntegrationTestBase;
 
@@ -449,9 +450,96 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
   }
 
-  // TODO Tests for capturing, replace, replaceAll, replaceFirst functions
+  @Test public void TestNoShiftInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(NoShift)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("BMW", 1, 1);
+    Set<Label> cells = createCells(cellA1);
 
-  // TODO Tests for shifting
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestShiftUpInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A4(ShiftUp)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("BMW", 1, 1);
+    Label cellA2 = createCell("", 1, 2);
+    Label cellA3 = createCell("", 1, 3);
+    Label cellA4 = createCell("", 1, 4);
+    Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestShiftDownInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(ShiftDown)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("", 1, 1);
+    Label cellA2 = createCell("", 1, 2);
+    Label cellA3 = createCell("", 1, 3);
+    Label cellA4 = createCell("BMW", 1, 4);
+    Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestShiftRightInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(ShiftRight)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("", 1, 1);
+    Label cellB1 = createCell("", 2, 1);
+    Label cellC1 = createCell("", 3, 1);
+    Label cellD1 = createCell("BMW", 4, 1);
+    Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestShiftLeftInReference() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @D1(ShiftLeft)}";
+    String expectedExpression = "{\"hasCar\": \"BMW\"}";
+    Label cellA1 = createCell("BMW", 1, 1);
+    Label cellB1 = createCell("", 2, 1);
+    Label cellC1 = createCell("", 3, 1);
+    Label cellD1 = createCell("", 4, 1);
+    Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
+
+  @Test public void TestErrorIfEmptyLocationReferenceDirective() throws ParseException, IOException, JSONSSException
+  {
+    String inputExpression = "{\"hasCar\": @A1(ErrorIfEmptyLocation)}";
+    Label cellA1 = createCell("", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+
+    this.thrown.expect(RendererException.class);
+    this.thrown.expectMessage("empty location 'Sheet1'!A1 in reference @A1(ErrorIfEmptyLocation)");
+
+    createTextRendering(SHEET1, cells, inputExpression, settings);
+  }
+
+  // TODO Tests for capturing, replace, replaceAll, replaceFirst functions
 
   // TODO Tests for empty location and literal handling
 
