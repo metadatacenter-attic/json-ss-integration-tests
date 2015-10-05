@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.metadatacenter.jsonss.core.settings.ReferenceSettings;
+import org.metadatacenter.jsonss.core.settings.ReferenceDirectivesSettings;
 import org.metadatacenter.jsonss.exceptions.JSONSSException;
 import org.metadatacenter.jsonss.parser.ParseException;
 import org.metadatacenter.jsonss.renderer.RendererException;
@@ -18,13 +18,13 @@ import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
 {
-  private ReferenceSettings settings;
+  private ReferenceDirectivesSettings settings;
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
 
   @Before public void setUp()
   {
-    settings = new ReferenceSettings();
+    settings = new ReferenceDirectivesSettings();
   }
 
   @Test public void TestEmptyObject() throws ParseException, IOException, JSONSSException
