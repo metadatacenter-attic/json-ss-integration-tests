@@ -543,17 +543,21 @@ public class TextRendererIT extends IntegrationTestBase
 
   // TODO Tests for empty location and literal handling
 
-  @Test public void TestObjectReferenceRange() throws ParseException, IOException
+  @Test public void TestObjectReferenceRange() throws ParseException, IOException, JSONSSException
   {
-    String inputExpression = "{\"people\": { \"@range\": @A1:A2, \"name\": @A*, \"age\": @B*(number)}}";
+    String inputExpression = "{\"people\": { @A1:A2 \"name\": @A*, \"age\": @B*(number)}}";
     String expectedExpression = "{\"people\": [" +
-        "{\"name\": \"Bob\", \"age\": 23 }," +
-        "{\"name\": \"Fred\", \"age\": 33 }]}";
+        "{\"name\": \"Bob\", \"age\": 23}, " +
+        "{\"name\": \"Fred\", \"age\": 33}]}";
     Label cellA1 = createCell("Bob", 1, 1);
     Label cellA2 = createCell("Fred", 1, 2);
     Label cellB1 = createCell("23", 2, 1);
     Label cellB2 = createCell("33", 2, 2);
     Set<Label> cells = createCells(cellA1, cellA2, cellB1, cellB2);
-  }
 
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, inputExpression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedExpression, textRendering.get().getRendering());
+  }
 }
